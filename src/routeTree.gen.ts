@@ -33,6 +33,8 @@ import { Route as ApiBotStatusGuildIdRouteImport } from './routes/api/bot/status
 import { Route as AuthenticatedDashboardServersGuildIdRouteImport } from './routes/_authenticated/dashboard.servers.$guildId'
 import { Route as ApiPublicBotVerifiedMembersGuildIdRouteImport } from './routes/api/public/bot/verified-members.$guildId'
 import { Route as ApiPublicBotConfigGuildIdRouteImport } from './routes/api/public/bot/config.$guildId'
+import { Route as ApiBotGuildsGuildIdConfigRouteImport } from './routes/api/bot/guilds.$guildId.config'
+import { Route as ApiBotGuildsGuildIdBackupsRouteImport } from './routes/api/bot/guilds.$guildId.backups'
 
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
@@ -159,6 +161,18 @@ const ApiPublicBotConfigGuildIdRoute =
     path: '/api/public/bot/config/$guildId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiBotGuildsGuildIdConfigRoute =
+  ApiBotGuildsGuildIdConfigRouteImport.update({
+    id: '/api/bot/guilds/$guildId/config',
+    path: '/api/bot/guilds/$guildId/config',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiBotGuildsGuildIdBackupsRoute =
+  ApiBotGuildsGuildIdBackupsRouteImport.update({
+    id: '/api/bot/guilds/$guildId/backups',
+    path: '/api/bot/guilds/$guildId/backups',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -182,6 +196,8 @@ export interface FileRoutesByFullPath {
   '/api/public/bot/backup': typeof ApiPublicBotBackupRoute
   '/api/public/verify/$token': typeof ApiPublicVerifyTokenRoute
   '/dashboard/servers/': typeof AuthenticatedDashboardServersIndexRoute
+  '/api/bot/guilds/$guildId/backups': typeof ApiBotGuildsGuildIdBackupsRoute
+  '/api/bot/guilds/$guildId/config': typeof ApiBotGuildsGuildIdConfigRoute
   '/api/public/bot/config/$guildId': typeof ApiPublicBotConfigGuildIdRoute
   '/api/public/bot/verified-members/$guildId': typeof ApiPublicBotVerifiedMembersGuildIdRoute
 }
@@ -206,6 +222,8 @@ export interface FileRoutesByTo {
   '/api/public/bot/backup': typeof ApiPublicBotBackupRoute
   '/api/public/verify/$token': typeof ApiPublicVerifyTokenRoute
   '/dashboard/servers': typeof AuthenticatedDashboardServersIndexRoute
+  '/api/bot/guilds/$guildId/backups': typeof ApiBotGuildsGuildIdBackupsRoute
+  '/api/bot/guilds/$guildId/config': typeof ApiBotGuildsGuildIdConfigRoute
   '/api/public/bot/config/$guildId': typeof ApiPublicBotConfigGuildIdRoute
   '/api/public/bot/verified-members/$guildId': typeof ApiPublicBotVerifiedMembersGuildIdRoute
 }
@@ -233,6 +251,8 @@ export interface FileRoutesById {
   '/api/public/bot/backup': typeof ApiPublicBotBackupRoute
   '/api/public/verify/$token': typeof ApiPublicVerifyTokenRoute
   '/_authenticated/dashboard/servers/': typeof AuthenticatedDashboardServersIndexRoute
+  '/api/bot/guilds/$guildId/backups': typeof ApiBotGuildsGuildIdBackupsRoute
+  '/api/bot/guilds/$guildId/config': typeof ApiBotGuildsGuildIdConfigRoute
   '/api/public/bot/config/$guildId': typeof ApiPublicBotConfigGuildIdRoute
   '/api/public/bot/verified-members/$guildId': typeof ApiPublicBotVerifiedMembersGuildIdRoute
 }
@@ -260,6 +280,8 @@ export interface FileRouteTypes {
     | '/api/public/bot/backup'
     | '/api/public/verify/$token'
     | '/dashboard/servers/'
+    | '/api/bot/guilds/$guildId/backups'
+    | '/api/bot/guilds/$guildId/config'
     | '/api/public/bot/config/$guildId'
     | '/api/public/bot/verified-members/$guildId'
   fileRoutesByTo: FileRoutesByTo
@@ -284,6 +306,8 @@ export interface FileRouteTypes {
     | '/api/public/bot/backup'
     | '/api/public/verify/$token'
     | '/dashboard/servers'
+    | '/api/bot/guilds/$guildId/backups'
+    | '/api/bot/guilds/$guildId/config'
     | '/api/public/bot/config/$guildId'
     | '/api/public/bot/verified-members/$guildId'
   id:
@@ -310,6 +334,8 @@ export interface FileRouteTypes {
     | '/api/public/bot/backup'
     | '/api/public/verify/$token'
     | '/_authenticated/dashboard/servers/'
+    | '/api/bot/guilds/$guildId/backups'
+    | '/api/bot/guilds/$guildId/config'
     | '/api/public/bot/config/$guildId'
     | '/api/public/bot/verified-members/$guildId'
   fileRoutesById: FileRoutesById
@@ -331,6 +357,8 @@ export interface RootRouteChildren {
   ApiBotStatusGuildIdRoute: typeof ApiBotStatusGuildIdRoute
   ApiPublicBotBackupRoute: typeof ApiPublicBotBackupRoute
   ApiPublicVerifyTokenRoute: typeof ApiPublicVerifyTokenRoute
+  ApiBotGuildsGuildIdBackupsRoute: typeof ApiBotGuildsGuildIdBackupsRoute
+  ApiBotGuildsGuildIdConfigRoute: typeof ApiBotGuildsGuildIdConfigRoute
   ApiPublicBotConfigGuildIdRoute: typeof ApiPublicBotConfigGuildIdRoute
   ApiPublicBotVerifiedMembersGuildIdRoute: typeof ApiPublicBotVerifiedMembersGuildIdRoute
 }
@@ -505,6 +533,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicBotConfigGuildIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/bot/guilds/$guildId/config': {
+      id: '/api/bot/guilds/$guildId/config'
+      path: '/api/bot/guilds/$guildId/config'
+      fullPath: '/api/bot/guilds/$guildId/config'
+      preLoaderRoute: typeof ApiBotGuildsGuildIdConfigRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/bot/guilds/$guildId/backups': {
+      id: '/api/bot/guilds/$guildId/backups'
+      path: '/api/bot/guilds/$guildId/backups'
+      fullPath: '/api/bot/guilds/$guildId/backups'
+      preLoaderRoute: typeof ApiBotGuildsGuildIdBackupsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -568,6 +610,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiBotStatusGuildIdRoute: ApiBotStatusGuildIdRoute,
   ApiPublicBotBackupRoute: ApiPublicBotBackupRoute,
   ApiPublicVerifyTokenRoute: ApiPublicVerifyTokenRoute,
+  ApiBotGuildsGuildIdBackupsRoute: ApiBotGuildsGuildIdBackupsRoute,
+  ApiBotGuildsGuildIdConfigRoute: ApiBotGuildsGuildIdConfigRoute,
   ApiPublicBotConfigGuildIdRoute: ApiPublicBotConfigGuildIdRoute,
   ApiPublicBotVerifiedMembersGuildIdRoute:
     ApiPublicBotVerifiedMembersGuildIdRoute,
