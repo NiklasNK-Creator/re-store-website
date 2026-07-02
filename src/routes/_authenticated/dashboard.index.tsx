@@ -20,6 +20,7 @@ function DashboardIndex() {
   const [user, setUser] = useState<{ username: string; avatar: string | null; discord_id: string } | null>(null);
   const [guilds, setGuilds] = useState<Guild[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [botStatuses, setBotStatuses] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     (async () => {
@@ -35,6 +36,16 @@ function DashboardIndex() {
         const all: Guild[] = await res.json();
         const admin = all.filter((g) => g.owner || (BigInt(g.permissions) & ADMIN_PERM) === ADMIN_PERM);
         setGuilds(admin);
+
+        const statuses: Record<string, boolean> = {};
+        await Promise.all(admin.map(async (g) => {
+          try {
+            const r = await fetch(`/api/bot/status/${g.id}`);
+            const s = await r.json();
+            statuses[g.id] = s.in_guild;
+          } catch { statuses[g.id] = false; }
+        }));
+        setBotStatuses(statuses);
       } catch (e) {
         setError((e as Error).message);
         setGuilds([]);
@@ -107,7 +118,10 @@ function DashboardIndex() {
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/40 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-                <span>Free tier</span>
+                <span className="flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${botStatuses[g.id] ? "bg-emerald-500" : "bg-red-500/60"}`} />
+                  {botStatuses[g.id] ? "Bot linked" : "Bot not linked"}
+                </span>
                 <span className="text-blood group-hover:translate-x-1 transition">→</span>
               </div>
             </Link>

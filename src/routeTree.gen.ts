@@ -29,6 +29,7 @@ import { Route as AuthenticatedDashboardBillingRouteImport } from './routes/_aut
 import { Route as AuthenticatedDashboardServersIndexRouteImport } from './routes/_authenticated/dashboard.servers.index'
 import { Route as ApiPublicVerifyTokenRouteImport } from './routes/api/public/verify.$token'
 import { Route as ApiPublicBotBackupRouteImport } from './routes/api/public/bot/backup'
+import { Route as ApiBotStatusGuildIdRouteImport } from './routes/api/bot/status.$guildId'
 import { Route as AuthenticatedDashboardServersGuildIdRouteImport } from './routes/_authenticated/dashboard.servers.$guildId'
 import { Route as ApiPublicBotVerifiedMembersGuildIdRouteImport } from './routes/api/public/bot/verified-members.$guildId'
 import { Route as ApiPublicBotConfigGuildIdRouteImport } from './routes/api/public/bot/config.$guildId'
@@ -135,6 +136,11 @@ const ApiPublicBotBackupRoute = ApiPublicBotBackupRouteImport.update({
   path: '/api/public/bot/backup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiBotStatusGuildIdRoute = ApiBotStatusGuildIdRouteImport.update({
+  id: '/api/bot/status/$guildId',
+  path: '/api/bot/status/$guildId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedDashboardServersGuildIdRoute =
   AuthenticatedDashboardServersGuildIdRouteImport.update({
     id: '/servers/$guildId',
@@ -172,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/signout': typeof ApiAuthSignoutRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/servers/$guildId': typeof AuthenticatedDashboardServersGuildIdRoute
+  '/api/bot/status/$guildId': typeof ApiBotStatusGuildIdRoute
   '/api/public/bot/backup': typeof ApiPublicBotBackupRoute
   '/api/public/verify/$token': typeof ApiPublicVerifyTokenRoute
   '/dashboard/servers/': typeof AuthenticatedDashboardServersIndexRoute
@@ -195,6 +202,7 @@ export interface FileRoutesByTo {
   '/api/auth/signout': typeof ApiAuthSignoutRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/servers/$guildId': typeof AuthenticatedDashboardServersGuildIdRoute
+  '/api/bot/status/$guildId': typeof ApiBotStatusGuildIdRoute
   '/api/public/bot/backup': typeof ApiPublicBotBackupRoute
   '/api/public/verify/$token': typeof ApiPublicVerifyTokenRoute
   '/dashboard/servers': typeof AuthenticatedDashboardServersIndexRoute
@@ -221,6 +229,7 @@ export interface FileRoutesById {
   '/api/auth/signout': typeof ApiAuthSignoutRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/dashboard/servers/$guildId': typeof AuthenticatedDashboardServersGuildIdRoute
+  '/api/bot/status/$guildId': typeof ApiBotStatusGuildIdRoute
   '/api/public/bot/backup': typeof ApiPublicBotBackupRoute
   '/api/public/verify/$token': typeof ApiPublicVerifyTokenRoute
   '/_authenticated/dashboard/servers/': typeof AuthenticatedDashboardServersIndexRoute
@@ -247,6 +256,7 @@ export interface FileRouteTypes {
     | '/api/auth/signout'
     | '/dashboard/'
     | '/dashboard/servers/$guildId'
+    | '/api/bot/status/$guildId'
     | '/api/public/bot/backup'
     | '/api/public/verify/$token'
     | '/dashboard/servers/'
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/api/auth/signout'
     | '/dashboard'
     | '/dashboard/servers/$guildId'
+    | '/api/bot/status/$guildId'
     | '/api/public/bot/backup'
     | '/api/public/verify/$token'
     | '/dashboard/servers'
@@ -295,6 +306,7 @@ export interface FileRouteTypes {
     | '/api/auth/signout'
     | '/_authenticated/dashboard/'
     | '/_authenticated/dashboard/servers/$guildId'
+    | '/api/bot/status/$guildId'
     | '/api/public/bot/backup'
     | '/api/public/verify/$token'
     | '/_authenticated/dashboard/servers/'
@@ -316,6 +328,7 @@ export interface RootRouteChildren {
   ApiAuthDiscordGuildsRoute: typeof ApiAuthDiscordGuildsRoute
   ApiAuthSessionRoute: typeof ApiAuthSessionRoute
   ApiAuthSignoutRoute: typeof ApiAuthSignoutRoute
+  ApiBotStatusGuildIdRoute: typeof ApiBotStatusGuildIdRoute
   ApiPublicBotBackupRoute: typeof ApiPublicBotBackupRoute
   ApiPublicVerifyTokenRoute: typeof ApiPublicVerifyTokenRoute
   ApiPublicBotConfigGuildIdRoute: typeof ApiPublicBotConfigGuildIdRoute
@@ -464,6 +477,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicBotBackupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/bot/status/$guildId': {
+      id: '/api/bot/status/$guildId'
+      path: '/api/bot/status/$guildId'
+      fullPath: '/api/bot/status/$guildId'
+      preLoaderRoute: typeof ApiBotStatusGuildIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/dashboard/servers/$guildId': {
       id: '/_authenticated/dashboard/servers/$guildId'
       path: '/servers/$guildId'
@@ -545,6 +565,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthDiscordGuildsRoute: ApiAuthDiscordGuildsRoute,
   ApiAuthSessionRoute: ApiAuthSessionRoute,
   ApiAuthSignoutRoute: ApiAuthSignoutRoute,
+  ApiBotStatusGuildIdRoute: ApiBotStatusGuildIdRoute,
   ApiPublicBotBackupRoute: ApiPublicBotBackupRoute,
   ApiPublicVerifyTokenRoute: ApiPublicVerifyTokenRoute,
   ApiPublicBotConfigGuildIdRoute: ApiPublicBotConfigGuildIdRoute,
