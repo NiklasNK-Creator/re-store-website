@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getSessionFromRequest } from "@/routes/api/auth/session";
 
-export const Route = createFileRoute("/api/auth/discord/guilds")({
+export const Route = createFileRoute("/api/auth/discord-guilds")({
   server: {
     handlers: {
       GET: async ({ request }) => {

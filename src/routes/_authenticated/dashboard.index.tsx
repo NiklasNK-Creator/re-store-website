@@ -30,7 +30,7 @@ function DashboardIndex() {
       setUser(session.user);
 
       try {
-        const res = await fetch("/api/auth/discord/guilds");
+        const res = await fetch("/api/auth/discord-guilds");
         if (!res.ok) throw new Error(`Discord ${res.status}`);
         const all: Guild[] = await res.json();
         const admin = all.filter((g) => g.owner || (BigInt(g.permissions) & ADMIN_PERM) === ADMIN_PERM);

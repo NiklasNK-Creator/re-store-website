@@ -20,6 +20,11 @@ import { Route as VerifyTokenRouteImport } from './routes/verify.$token'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
+import { Route as ApiAuthSignoutRouteImport } from './routes/api/auth/signout'
+import { Route as ApiAuthSessionRouteImport } from './routes/api/auth/session'
+import { Route as ApiAuthDiscordGuildsRouteImport } from './routes/api/auth/discord-guilds'
+import { Route as ApiAuthDiscordRouteImport } from './routes/api/auth/discord'
+import { Route as ApiAuthCallbackRouteImport } from './routes/api/auth/callback'
 import { Route as AuthenticatedDashboardBillingRouteImport } from './routes/_authenticated/dashboard.billing'
 import { Route as AuthenticatedDashboardServersIndexRouteImport } from './routes/_authenticated/dashboard.servers.index'
 import { Route as ApiPublicVerifyTokenRouteImport } from './routes/api/public/verify.$token'
@@ -83,6 +88,31 @@ const AuthenticatedDashboardIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const ApiAuthSignoutRoute = ApiAuthSignoutRouteImport.update({
+  id: '/api/auth/signout',
+  path: '/api/auth/signout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthSessionRoute = ApiAuthSessionRouteImport.update({
+  id: '/api/auth/session',
+  path: '/api/auth/session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthDiscordGuildsRoute = ApiAuthDiscordGuildsRouteImport.update({
+  id: '/api/auth/discord-guilds',
+  path: '/api/auth/discord-guilds',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthDiscordRoute = ApiAuthDiscordRouteImport.update({
+  id: '/api/auth/discord',
+  path: '/api/auth/discord',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthCallbackRoute = ApiAuthCallbackRouteImport.update({
+  id: '/api/auth/callback',
+  path: '/api/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedDashboardBillingRoute =
   AuthenticatedDashboardBillingRouteImport.update({
     id: '/billing',
@@ -135,6 +165,11 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackRoute
   '/verify/$token': typeof VerifyTokenRoute
   '/dashboard/billing': typeof AuthenticatedDashboardBillingRoute
+  '/api/auth/callback': typeof ApiAuthCallbackRoute
+  '/api/auth/discord': typeof ApiAuthDiscordRoute
+  '/api/auth/discord-guilds': typeof ApiAuthDiscordGuildsRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/auth/signout': typeof ApiAuthSignoutRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/servers/$guildId': typeof AuthenticatedDashboardServersGuildIdRoute
   '/api/public/bot/backup': typeof ApiPublicBotBackupRoute
@@ -153,6 +188,11 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackRoute
   '/verify/$token': typeof VerifyTokenRoute
   '/dashboard/billing': typeof AuthenticatedDashboardBillingRoute
+  '/api/auth/callback': typeof ApiAuthCallbackRoute
+  '/api/auth/discord': typeof ApiAuthDiscordRoute
+  '/api/auth/discord-guilds': typeof ApiAuthDiscordGuildsRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/auth/signout': typeof ApiAuthSignoutRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/servers/$guildId': typeof AuthenticatedDashboardServersGuildIdRoute
   '/api/public/bot/backup': typeof ApiPublicBotBackupRoute
@@ -174,6 +214,11 @@ export interface FileRoutesById {
   '/auth/callback': typeof AuthCallbackRoute
   '/verify/$token': typeof VerifyTokenRoute
   '/_authenticated/dashboard/billing': typeof AuthenticatedDashboardBillingRoute
+  '/api/auth/callback': typeof ApiAuthCallbackRoute
+  '/api/auth/discord': typeof ApiAuthDiscordRoute
+  '/api/auth/discord-guilds': typeof ApiAuthDiscordGuildsRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
+  '/api/auth/signout': typeof ApiAuthSignoutRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/dashboard/servers/$guildId': typeof AuthenticatedDashboardServersGuildIdRoute
   '/api/public/bot/backup': typeof ApiPublicBotBackupRoute
@@ -195,6 +240,11 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/verify/$token'
     | '/dashboard/billing'
+    | '/api/auth/callback'
+    | '/api/auth/discord'
+    | '/api/auth/discord-guilds'
+    | '/api/auth/session'
+    | '/api/auth/signout'
     | '/dashboard/'
     | '/dashboard/servers/$guildId'
     | '/api/public/bot/backup'
@@ -213,6 +263,11 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/verify/$token'
     | '/dashboard/billing'
+    | '/api/auth/callback'
+    | '/api/auth/discord'
+    | '/api/auth/discord-guilds'
+    | '/api/auth/session'
+    | '/api/auth/signout'
     | '/dashboard'
     | '/dashboard/servers/$guildId'
     | '/api/public/bot/backup'
@@ -233,6 +288,11 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/verify/$token'
     | '/_authenticated/dashboard/billing'
+    | '/api/auth/callback'
+    | '/api/auth/discord'
+    | '/api/auth/discord-guilds'
+    | '/api/auth/session'
+    | '/api/auth/signout'
     | '/_authenticated/dashboard/'
     | '/_authenticated/dashboard/servers/$guildId'
     | '/api/public/bot/backup'
@@ -251,6 +311,11 @@ export interface RootRouteChildren {
   LegalRoute: typeof LegalRoute
   PricingRoute: typeof PricingRoute
   VerifyTokenRoute: typeof VerifyTokenRoute
+  ApiAuthCallbackRoute: typeof ApiAuthCallbackRoute
+  ApiAuthDiscordRoute: typeof ApiAuthDiscordRoute
+  ApiAuthDiscordGuildsRoute: typeof ApiAuthDiscordGuildsRoute
+  ApiAuthSessionRoute: typeof ApiAuthSessionRoute
+  ApiAuthSignoutRoute: typeof ApiAuthSignoutRoute
   ApiPublicBotBackupRoute: typeof ApiPublicBotBackupRoute
   ApiPublicVerifyTokenRoute: typeof ApiPublicVerifyTokenRoute
   ApiPublicBotConfigGuildIdRoute: typeof ApiPublicBotConfigGuildIdRoute
@@ -335,6 +400,41 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/api/auth/signout': {
+      id: '/api/auth/signout'
+      path: '/api/auth/signout'
+      fullPath: '/api/auth/signout'
+      preLoaderRoute: typeof ApiAuthSignoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/session': {
+      id: '/api/auth/session'
+      path: '/api/auth/session'
+      fullPath: '/api/auth/session'
+      preLoaderRoute: typeof ApiAuthSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/discord-guilds': {
+      id: '/api/auth/discord-guilds'
+      path: '/api/auth/discord-guilds'
+      fullPath: '/api/auth/discord-guilds'
+      preLoaderRoute: typeof ApiAuthDiscordGuildsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/discord': {
+      id: '/api/auth/discord'
+      path: '/api/auth/discord'
+      fullPath: '/api/auth/discord'
+      preLoaderRoute: typeof ApiAuthDiscordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/callback': {
+      id: '/api/auth/callback'
+      path: '/api/auth/callback'
+      fullPath: '/api/auth/callback'
+      preLoaderRoute: typeof ApiAuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard/billing': {
       id: '/_authenticated/dashboard/billing'
@@ -440,6 +540,11 @@ const rootRouteChildren: RootRouteChildren = {
   LegalRoute: LegalRoute,
   PricingRoute: PricingRoute,
   VerifyTokenRoute: VerifyTokenRoute,
+  ApiAuthCallbackRoute: ApiAuthCallbackRoute,
+  ApiAuthDiscordRoute: ApiAuthDiscordRoute,
+  ApiAuthDiscordGuildsRoute: ApiAuthDiscordGuildsRoute,
+  ApiAuthSessionRoute: ApiAuthSessionRoute,
+  ApiAuthSignoutRoute: ApiAuthSignoutRoute,
   ApiPublicBotBackupRoute: ApiPublicBotBackupRoute,
   ApiPublicVerifyTokenRoute: ApiPublicVerifyTokenRoute,
   ApiPublicBotConfigGuildIdRoute: ApiPublicBotConfigGuildIdRoute,
