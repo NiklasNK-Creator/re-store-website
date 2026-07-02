@@ -35,6 +35,9 @@ import { Route as ApiPublicBotVerifiedMembersGuildIdRouteImport } from './routes
 import { Route as ApiPublicBotConfigGuildIdRouteImport } from './routes/api/public/bot/config.$guildId'
 import { Route as ApiBotGuildsGuildIdConfigRouteImport } from './routes/api/bot/guilds.$guildId.config'
 import { Route as ApiBotGuildsGuildIdBackupsRouteImport } from './routes/api/bot/guilds.$guildId.backups'
+import { Route as ApiBotGuildsGuildIdBackupRestoreRouteImport } from './routes/api/bot/guilds.$guildId.backup-restore'
+import { Route as ApiBotGuildsGuildIdBackupDeleteRouteImport } from './routes/api/bot/guilds.$guildId.backup-delete'
+import { Route as ApiBotGuildsGuildIdBackupsTriggerRouteImport } from './routes/api/bot/guilds.$guildId.backups.trigger'
 
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
@@ -173,6 +176,24 @@ const ApiBotGuildsGuildIdBackupsRoute =
     path: '/api/bot/guilds/$guildId/backups',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiBotGuildsGuildIdBackupRestoreRoute =
+  ApiBotGuildsGuildIdBackupRestoreRouteImport.update({
+    id: '/api/bot/guilds/$guildId/backup-restore',
+    path: '/api/bot/guilds/$guildId/backup-restore',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiBotGuildsGuildIdBackupDeleteRoute =
+  ApiBotGuildsGuildIdBackupDeleteRouteImport.update({
+    id: '/api/bot/guilds/$guildId/backup-delete',
+    path: '/api/bot/guilds/$guildId/backup-delete',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiBotGuildsGuildIdBackupsTriggerRoute =
+  ApiBotGuildsGuildIdBackupsTriggerRouteImport.update({
+    id: '/trigger',
+    path: '/trigger',
+    getParentRoute: () => ApiBotGuildsGuildIdBackupsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -196,10 +217,13 @@ export interface FileRoutesByFullPath {
   '/api/public/bot/backup': typeof ApiPublicBotBackupRoute
   '/api/public/verify/$token': typeof ApiPublicVerifyTokenRoute
   '/dashboard/servers/': typeof AuthenticatedDashboardServersIndexRoute
-  '/api/bot/guilds/$guildId/backups': typeof ApiBotGuildsGuildIdBackupsRoute
+  '/api/bot/guilds/$guildId/backup-delete': typeof ApiBotGuildsGuildIdBackupDeleteRoute
+  '/api/bot/guilds/$guildId/backup-restore': typeof ApiBotGuildsGuildIdBackupRestoreRoute
+  '/api/bot/guilds/$guildId/backups': typeof ApiBotGuildsGuildIdBackupsRouteWithChildren
   '/api/bot/guilds/$guildId/config': typeof ApiBotGuildsGuildIdConfigRoute
   '/api/public/bot/config/$guildId': typeof ApiPublicBotConfigGuildIdRoute
   '/api/public/bot/verified-members/$guildId': typeof ApiPublicBotVerifiedMembersGuildIdRoute
+  '/api/bot/guilds/$guildId/backups/trigger': typeof ApiBotGuildsGuildIdBackupsTriggerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -222,10 +246,13 @@ export interface FileRoutesByTo {
   '/api/public/bot/backup': typeof ApiPublicBotBackupRoute
   '/api/public/verify/$token': typeof ApiPublicVerifyTokenRoute
   '/dashboard/servers': typeof AuthenticatedDashboardServersIndexRoute
-  '/api/bot/guilds/$guildId/backups': typeof ApiBotGuildsGuildIdBackupsRoute
+  '/api/bot/guilds/$guildId/backup-delete': typeof ApiBotGuildsGuildIdBackupDeleteRoute
+  '/api/bot/guilds/$guildId/backup-restore': typeof ApiBotGuildsGuildIdBackupRestoreRoute
+  '/api/bot/guilds/$guildId/backups': typeof ApiBotGuildsGuildIdBackupsRouteWithChildren
   '/api/bot/guilds/$guildId/config': typeof ApiBotGuildsGuildIdConfigRoute
   '/api/public/bot/config/$guildId': typeof ApiPublicBotConfigGuildIdRoute
   '/api/public/bot/verified-members/$guildId': typeof ApiPublicBotVerifiedMembersGuildIdRoute
+  '/api/bot/guilds/$guildId/backups/trigger': typeof ApiBotGuildsGuildIdBackupsTriggerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -251,10 +278,13 @@ export interface FileRoutesById {
   '/api/public/bot/backup': typeof ApiPublicBotBackupRoute
   '/api/public/verify/$token': typeof ApiPublicVerifyTokenRoute
   '/_authenticated/dashboard/servers/': typeof AuthenticatedDashboardServersIndexRoute
-  '/api/bot/guilds/$guildId/backups': typeof ApiBotGuildsGuildIdBackupsRoute
+  '/api/bot/guilds/$guildId/backup-delete': typeof ApiBotGuildsGuildIdBackupDeleteRoute
+  '/api/bot/guilds/$guildId/backup-restore': typeof ApiBotGuildsGuildIdBackupRestoreRoute
+  '/api/bot/guilds/$guildId/backups': typeof ApiBotGuildsGuildIdBackupsRouteWithChildren
   '/api/bot/guilds/$guildId/config': typeof ApiBotGuildsGuildIdConfigRoute
   '/api/public/bot/config/$guildId': typeof ApiPublicBotConfigGuildIdRoute
   '/api/public/bot/verified-members/$guildId': typeof ApiPublicBotVerifiedMembersGuildIdRoute
+  '/api/bot/guilds/$guildId/backups/trigger': typeof ApiBotGuildsGuildIdBackupsTriggerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -280,10 +310,13 @@ export interface FileRouteTypes {
     | '/api/public/bot/backup'
     | '/api/public/verify/$token'
     | '/dashboard/servers/'
+    | '/api/bot/guilds/$guildId/backup-delete'
+    | '/api/bot/guilds/$guildId/backup-restore'
     | '/api/bot/guilds/$guildId/backups'
     | '/api/bot/guilds/$guildId/config'
     | '/api/public/bot/config/$guildId'
     | '/api/public/bot/verified-members/$guildId'
+    | '/api/bot/guilds/$guildId/backups/trigger'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -306,10 +339,13 @@ export interface FileRouteTypes {
     | '/api/public/bot/backup'
     | '/api/public/verify/$token'
     | '/dashboard/servers'
+    | '/api/bot/guilds/$guildId/backup-delete'
+    | '/api/bot/guilds/$guildId/backup-restore'
     | '/api/bot/guilds/$guildId/backups'
     | '/api/bot/guilds/$guildId/config'
     | '/api/public/bot/config/$guildId'
     | '/api/public/bot/verified-members/$guildId'
+    | '/api/bot/guilds/$guildId/backups/trigger'
   id:
     | '__root__'
     | '/'
@@ -334,10 +370,13 @@ export interface FileRouteTypes {
     | '/api/public/bot/backup'
     | '/api/public/verify/$token'
     | '/_authenticated/dashboard/servers/'
+    | '/api/bot/guilds/$guildId/backup-delete'
+    | '/api/bot/guilds/$guildId/backup-restore'
     | '/api/bot/guilds/$guildId/backups'
     | '/api/bot/guilds/$guildId/config'
     | '/api/public/bot/config/$guildId'
     | '/api/public/bot/verified-members/$guildId'
+    | '/api/bot/guilds/$guildId/backups/trigger'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -357,7 +396,9 @@ export interface RootRouteChildren {
   ApiBotStatusGuildIdRoute: typeof ApiBotStatusGuildIdRoute
   ApiPublicBotBackupRoute: typeof ApiPublicBotBackupRoute
   ApiPublicVerifyTokenRoute: typeof ApiPublicVerifyTokenRoute
-  ApiBotGuildsGuildIdBackupsRoute: typeof ApiBotGuildsGuildIdBackupsRoute
+  ApiBotGuildsGuildIdBackupDeleteRoute: typeof ApiBotGuildsGuildIdBackupDeleteRoute
+  ApiBotGuildsGuildIdBackupRestoreRoute: typeof ApiBotGuildsGuildIdBackupRestoreRoute
+  ApiBotGuildsGuildIdBackupsRoute: typeof ApiBotGuildsGuildIdBackupsRouteWithChildren
   ApiBotGuildsGuildIdConfigRoute: typeof ApiBotGuildsGuildIdConfigRoute
   ApiPublicBotConfigGuildIdRoute: typeof ApiPublicBotConfigGuildIdRoute
   ApiPublicBotVerifiedMembersGuildIdRoute: typeof ApiPublicBotVerifiedMembersGuildIdRoute
@@ -547,6 +588,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiBotGuildsGuildIdBackupsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/bot/guilds/$guildId/backup-restore': {
+      id: '/api/bot/guilds/$guildId/backup-restore'
+      path: '/api/bot/guilds/$guildId/backup-restore'
+      fullPath: '/api/bot/guilds/$guildId/backup-restore'
+      preLoaderRoute: typeof ApiBotGuildsGuildIdBackupRestoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/bot/guilds/$guildId/backup-delete': {
+      id: '/api/bot/guilds/$guildId/backup-delete'
+      path: '/api/bot/guilds/$guildId/backup-delete'
+      fullPath: '/api/bot/guilds/$guildId/backup-delete'
+      preLoaderRoute: typeof ApiBotGuildsGuildIdBackupDeleteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/bot/guilds/$guildId/backups/trigger': {
+      id: '/api/bot/guilds/$guildId/backups/trigger'
+      path: '/trigger'
+      fullPath: '/api/bot/guilds/$guildId/backups/trigger'
+      preLoaderRoute: typeof ApiBotGuildsGuildIdBackupsTriggerRouteImport
+      parentRoute: typeof ApiBotGuildsGuildIdBackupsRoute
+    }
   }
 }
 
@@ -593,6 +655,21 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface ApiBotGuildsGuildIdBackupsRouteChildren {
+  ApiBotGuildsGuildIdBackupsTriggerRoute: typeof ApiBotGuildsGuildIdBackupsTriggerRoute
+}
+
+const ApiBotGuildsGuildIdBackupsRouteChildren: ApiBotGuildsGuildIdBackupsRouteChildren =
+  {
+    ApiBotGuildsGuildIdBackupsTriggerRoute:
+      ApiBotGuildsGuildIdBackupsTriggerRoute,
+  }
+
+const ApiBotGuildsGuildIdBackupsRouteWithChildren =
+  ApiBotGuildsGuildIdBackupsRoute._addFileChildren(
+    ApiBotGuildsGuildIdBackupsRouteChildren,
+  )
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -610,7 +687,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiBotStatusGuildIdRoute: ApiBotStatusGuildIdRoute,
   ApiPublicBotBackupRoute: ApiPublicBotBackupRoute,
   ApiPublicVerifyTokenRoute: ApiPublicVerifyTokenRoute,
-  ApiBotGuildsGuildIdBackupsRoute: ApiBotGuildsGuildIdBackupsRoute,
+  ApiBotGuildsGuildIdBackupDeleteRoute: ApiBotGuildsGuildIdBackupDeleteRoute,
+  ApiBotGuildsGuildIdBackupRestoreRoute: ApiBotGuildsGuildIdBackupRestoreRoute,
+  ApiBotGuildsGuildIdBackupsRoute: ApiBotGuildsGuildIdBackupsRouteWithChildren,
   ApiBotGuildsGuildIdConfigRoute: ApiBotGuildsGuildIdConfigRoute,
   ApiPublicBotConfigGuildIdRoute: ApiPublicBotConfigGuildIdRoute,
   ApiPublicBotVerifiedMembersGuildIdRoute:

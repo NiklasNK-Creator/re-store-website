@@ -6,7 +6,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/servers/$guildId
   component: GuildDetail,
 });
 
-type Backup = { backup_id: string; created_at: string; size_bytes: number };
+type Backup = { backup_id: string; created_at: string; size_bytes: number; guild_name: string };
 type GuildConfig = { registered: boolean; plan: string; limits: { backups: number }; scheduled_backup: boolean };
 
 function GuildDetail() {
@@ -14,23 +14,89 @@ function GuildDetail() {
   const [config, setConfig] = useState<GuildConfig | null>(null);
   const [backups, setBackups] = useState<Backup[]>([]);
   const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
+  const [restoring, setRestoring] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [msg, setMsg] = useState<string | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const [cfgRes, bakRes] = await Promise.all([
-          fetch(`/api/bot/guilds/${guildId}/config`),
-          fetch(`/api/bot/guilds/${guildId}/backups`),
-        ]);
-        if (cfgRes.ok) setConfig(await cfgRes.json());
-        if (bakRes.ok) {
-          const data = await bakRes.json();
-          setBackups(data.backups ?? []);
-        }
-      } catch {}
-      setLoading(false);
-    })();
-  }, [guildId]);
+  const load = async () => {
+    try {
+      const [cfgRes, bakRes] = await Promise.all([
+        fetch(`/api/bot/guilds/${guildId}/config`),
+        fetch(`/api/bot/guilds/${guildId}/backups`),
+      ]);
+      if (cfgRes.ok) setConfig(await cfgRes.json());
+      if (bakRes.ok) {
+        const data = await bakRes.json();
+        setBackups(data.backups ?? []);
+      }
+    } catch {}
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, [guildId]);
+
+  const handleBackup = async () => {
+    setCreating(true);
+    setMsg(null);
+    try {
+      const res = await fetch(`/api/bot/guilds/${guildId}/backups/trigger`, { method: "POST" });
+      const data = await res.json();
+      if (data.ok) {
+        setMsg(`Backup sealed: ${data.counts.channels} channels, ${data.counts.messages} messages, ${data.counts.roles} roles, ${data.counts.emojis} emojis, ${data.counts.soundboard} sounds`);
+        await load();
+      } else {
+        setMsg(`Error: ${data.error}`);
+      }
+    } catch (e) {
+      setMsg(`Error: ${(e as Error).message}`);
+    }
+    setCreating(false);
+  };
+
+  const handleRestore = async (backupId: string) => {
+    setRestoring(backupId);
+    setMsg(null);
+    try {
+      const res = await fetch(`/api/bot/guilds/${guildId}/backup-restore`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ backupId }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setMsg(`Restored: ${data.rolesCreated} roles, ${data.channelsCreated} channels, ${data.messagesRestored} messages, ${data.emojisRestored} emojis, ${data.soundboardRestored ?? 0} sounds`);
+      } else {
+        setMsg(`Error: ${data.error}`);
+      }
+    } catch (e) {
+      setMsg(`Error: ${(e as Error).message}`);
+    }
+    setRestoring(null);
+  };
+
+  const handleDelete = async (backupId: string) => {
+    if (!confirm("Delete this backup?")) return;
+    setDeleting(backupId);
+    setMsg(null);
+    try {
+      const res = await fetch(`/api/bot/guilds/${guildId}/backup-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ backupId }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setMsg("Backup deleted.");
+        await load();
+      } else {
+        setMsg(`Error: ${data.error}`);
+      }
+    } catch (e) {
+      setMsg(`Error: ${(e as Error).message}`);
+    }
+    setDeleting(null);
+  };
 
   const plan = config?.plan ?? "free";
   const backupLimit = config?.limits?.backups ?? 3;
@@ -71,20 +137,30 @@ function GuildDetail() {
             </div>
           </div>
 
+          {msg && (
+            <div className={`border p-4 font-mono text-[11px] mb-6 ${msg.startsWith("Error") ? "border-destructive/60 bg-destructive/10 text-destructive" : "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"}`}>
+              {msg}
+            </div>
+          )}
+
           <div className="gothic-divider my-10" />
 
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-display text-2xl">Backups</h2>
-            <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-              Run /backup in Discord to create
-            </div>
+            <button
+              onClick={handleBackup}
+              disabled={creating}
+              className="border border-blood bg-blood/10 px-5 py-2 font-mono text-[11px] uppercase tracking-[0.3em] text-parchment hover:bg-blood transition disabled:opacity-50"
+            >
+              {creating ? "Sealing..." : "+ Create Backup"}
+            </button>
           </div>
 
           {backups.length === 0 ? (
             <div className="border border-border/60 bg-mist/30 p-16 text-center">
               <Sigil size={48} className="mx-auto opacity-50" />
               <p className="mt-6 font-display text-2xl">No backups yet.</p>
-              <p className="mt-2 text-sm text-muted-foreground">Use /backup in your Discord server to create the first seal.</p>
+              <p className="mt-2 text-sm text-muted-foreground">Click "Create Backup" above or use /backup in Discord.</p>
             </div>
           ) : (
             <div className="border border-border/60 bg-background/60 divide-y divide-border/40">
@@ -99,8 +175,24 @@ function GuildDetail() {
                       </div>
                     </div>
                   </div>
-                  <div className="font-mono text-[11px] text-muted-foreground">
-                    {(b.size_bytes / 1024).toFixed(1)} KB
+                  <div className="flex items-center gap-3">
+                    <div className="font-mono text-[11px] text-muted-foreground">
+                      {(b.size_bytes / 1024).toFixed(1)} KB
+                    </div>
+                    <button
+                      onClick={() => handleRestore(b.backup_id)}
+                      disabled={restoring === b.backup_id}
+                      className="border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.3em] text-emerald-400 hover:bg-emerald-500/20 transition disabled:opacity-50"
+                    >
+                      {restoring === b.backup_id ? "Restoring..." : "Restore"}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(b.backup_id)}
+                      disabled={deleting === b.backup_id}
+                      className="border border-destructive/40 bg-destructive/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.3em] text-destructive hover:bg-destructive/20 transition disabled:opacity-50"
+                    >
+                      {deleting === b.backup_id ? "..." : "Delete"}
+                    </button>
                   </div>
                 </div>
               ))}
@@ -110,7 +202,7 @@ function GuildDetail() {
           <div className="gothic-divider my-10" />
 
           <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display text-2xl">Commands</h2>
+            <h2 className="font-display text-2xl">Discord Commands</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
             {[
